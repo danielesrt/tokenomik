@@ -1,27 +1,27 @@
 <!DOCTYPE html>
-<html lang=“tr”>
+<html lang="tr">
 <head>
-<meta charset=“UTF-8”>
-<meta name=“viewport” content=“width=device-width, initial-scale=1.0”>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tokenomik — Animasyon</title>
-<link href=“https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Space+Mono:wght@400;700&display=swap” rel=“stylesheet”>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    —bg: #050508;
-    —gold: #F5C542;
-    —orange: #FF6B2B;
-    —white: #F0EDE8;
-    —dim: #8A8580;
-    —card: #0D0D12;
-    —border: #1E1E28;
+    --bg: #050508;
+    --gold: #F5C542;
+    --orange: #FF6B2B;
+    --white: #F0EDE8;
+    --dim: #8A8580;
+    --card: #0D0D12;
+    --border: #1E1E28;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    background: var(—bg);
-    font-family: ‘Syne’, sans-serif;
-    color: var(—white);
+    background: var(--bg);
+    font-family: 'Syne', sans-serif;
+    color: var(--white);
     width: 1080px;
     height: 1080px;
     overflow: hidden;
@@ -44,7 +44,7 @@
     position: absolute;
     inset: 0;
     opacity: 0.04;
-    background-image: url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 256 256’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘noise’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.9’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23noise)’/%3E%3C/svg%3E”);
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
     z-index: 0;
   }
 
@@ -56,7 +56,944 @@
     border-radius: 50%;
     background: radial-gradient(circle, rgba(245,197,66,0.06) 0%, transparent 70%);
     top: -150px;
+    right: -150px;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .glow2 {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,107,43,0.05) 0%, transparent 70%);
+    bottom: -100px;
+    left: -100px;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Slides */
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 80px;
+    z-index: 1;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.0s;
+  }
+
+  .slide.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* Top bar */
+  .topbar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--gold), var(--orange));
+    z-index: 10;
+  }
+
+  /* Progress bar */
+  .progress-track {
+    position: absolute;
+    bottom: 40px;
+    left: 80px;
+    right: 80px;
+    height: 2px;
+    background: var(--border);
+    z-index: 10;
+    border-radius: 2px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--orange));
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  /* Slide counter */
+  .counter {
+    position: absolute;
+    bottom: 55px;
+    right: 80px;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--dim);
+    z-index: 10;
+    letter-spacing: 2px;
+  }
+
+  /* Brand */
+  .brand {
+    position: absolute;
+    bottom: 55px;
+    left: 80px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--dim);
+    z-index: 10;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  /* ===== SLIDE STYLES ===== */
+
+  /* INTRO SLIDE */
+  .slide-intro .tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 4px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.2s forwards;
+  }
+
+  .slide-intro h1 {
+    font-size: 96px;
+    font-weight: 800;
+    line-height: 0.95;
+    text-align: center;
+    letter-spacing: -3px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.4s forwards;
+  }
+
+  .slide-intro h1 span {
+    color: var(--gold);
+    display: block;
+  }
+
+  .slide-intro .sub {
+    margin-top: 40px;
+    font-size: 18px;
+    color: var(--dim);
+    text-align: center;
+    max-width: 600px;
+    line-height: 1.6;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.6s forwards;
+  }
+
+  .slide-intro .pill {
+    margin-top: 48px;
+    display: flex;
+    gap: 16px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.8s forwards;
+  }
+
+  .pill-item {
+    border: 1px solid var(--border);
+    padding: 10px 24px;
+    border-radius: 100px;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--dim);
+    letter-spacing: 1px;
+  }
+
+  /* SECTION SLIDE */
+  .slide-section {
+    background: linear-gradient(135deg, #0D0D12 0%, #050508 100%);
+  }
+
+  .slide-section .section-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 140px;
+    font-weight: 700;
+    color: rgba(245,197,66,0.06);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    letter-spacing: -5px;
+    z-index: 0;
+    white-space: nowrap;
+  }
+
+  .slide-section .content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+  }
+
+  .slide-section .label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 5px;
+    color: var(--orange);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 0.5s ease 0.1s forwards;
+  }
+
+  .slide-section h2 {
+    font-size: 72px;
+    font-weight: 800;
+    letter-spacing: -2px;
+    line-height: 1;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.2s forwards;
+  }
+
+  .slide-section h2 em {
+    font-style: normal;
+    color: var(--gold);
+  }
+
+  /* CONTENT SLIDE */
+  .slide-content .tweet-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 0.4s ease 0.1s forwards;
+  }
+
+  .slide-content .main-text {
+    font-size: 38px;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.5px;
+    text-align: center;
+    max-width: 860px;
+    opacity: 0;
+    animation: fadeUp 0.5s ease 0.25s forwards;
+  }
+
+  .slide-content .main-text .highlight {
+    color: var(--gold);
+  }
+
+  .slide-content .main-text .highlight-orange {
+    color: var(--orange);
+  }
+
+  /* LIST SLIDE */
+  .slide-list .title {
+    font-size: 42px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 48px;
+    text-align: center;
+    opacity: 0;
+    animation: fadeUp 0.4s ease 0.1s forwards;
+  }
+
+  .slide-list .title span { color: var(--gold); }
+
+  .list-items {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 780px;
+  }
+
+  .list-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    opacity: 0;
+  }
+
+  .list-item:nth-child(1) { animation: slideIn 0.5s ease 0.2s forwards; }
+  .list-item:nth-child(2) { animation: slideIn 0.5s ease 0.35s forwards; }
+  .list-item:nth-child(3) { animation: slideIn 0.5s ease 0.5s forwards; }
+  .list-item:nth-child(4) { animation: slideIn 0.5s ease 0.65s forwards; }
+
+  .list-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--gold);
+    background: rgba(245,197,66,0.1);
+    border: 1px solid rgba(245,197,66,0.2);
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+
+  .list-text {
+    font-size: 24px;
+    line-height: 1.45;
+    color: var(--white);
+  }
+
+  .list-text strong { color: var(--gold); font-weight: 700; }
+
+  /* STAT SLIDE */
+  .slide-stat .big-num {
+    font-size: 160px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -6px;
+    background: linear-gradient(135deg, var(--gold), var(--orange));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    opacity: 0;
+    animation: scaleIn 0.6s ease 0.1s forwards;
+  }
+
+  .slide-stat .stat-label {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--white);
+    margin-top: 16px;
+    text-align: center;
+    max-width: 600px;
+    opacity: 0;
+    animation: fadeUp 0.5s ease 0.4s forwards;
+  }
+
+  .slide-stat .stat-sub {
+    font-size: 18px;
+    color: var(--dim);
+    margin-top: 16px;
+    text-align: center;
+    max-width: 540px;
+    line-height: 1.6;
+    opacity: 0;
+    animation: fadeUp 0.5s ease 0.55s forwards;
+  }
+
+  /* DEFINITION SLIDE */
+  .slide-def {
+    align-items: flex-start;
+  }
+
+  .slide-def .def-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: var(--orange);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    border-left: 3px solid var(--orange);
+    padding-left: 16px;
+    opacity: 0;
+    animation: fadeUp 0.4s ease 0.1s forwards;
+  }
+
+  .slide-def .def-word {
+    font-size: 64px;
+    font-weight: 800;
+    letter-spacing: -2px;
+    line-height: 1;
+    color: var(--gold);
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 0.5s ease 0.2s forwards;
+  }
+
+  .slide-def .def-text {
+    font-size: 26px;
+    line-height: 1.55;
+    color: var(--white);
+    max-width: 820px;
+    opacity: 0;
+    animation: fadeUp 0.5s ease 0.35s forwards;
+  }
+
+  .slide-def .def-text strong { color: var(--gold); }
+
+  /* TWO-COL SLIDE */
+  .slide-two .two-title {
+    font-size: 44px;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    margin-bottom: 48px;
+    text-align: center;
+    opacity: 0;
+    animation: fadeUp 0.4s ease 0.1s forwards;
+  }
+  .slide-two .two-title span { color: var(--gold); }
+
+  .two-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    width: 100%;
+    max-width: 860px;
+  }
+
+  .col-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    opacity: 0;
+  }
+
+  .col-card:nth-child(1) { animation: slideIn 0.5s ease 0.2s forwards; }
+  .col-card:nth-child(2) { animation: slideIn 0.5s ease 0.35s forwards; }
+
+  .col-card .col-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .col-card .col-text {
+    font-size: 22px;
+    line-height: 1.5;
+    color: var(--white);
+  }
+
+  .col-card .col-text strong { color: var(--gold); }
+
+  /* QUOTE SLIDE */
+  .slide-quote {
+    background: linear-gradient(135deg, #0D0D12, #050508);
+  }
+
+  .slide-quote .quote-mark {
+    font-size: 120px;
+    line-height: 0.5;
+    color: rgba(245,197,66,0.15);
+    font-family: Georgia, serif;
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeIn 0.4s ease 0.1s forwards;
+  }
+
+  .slide-quote .quote-text {
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.5;
+    text-align: center;
+    max-width: 780px;
+    color: var(--white);
+    opacity: 0;
+    animation: fadeUp 0.5s ease 0.25s forwards;
+  }
+
+  .slide-quote .quote-text em {
+    font-style: normal;
+    color: var(--gold);
+  }
+
+  .slide-quote .quote-source {
+    margin-top: 40px;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: var(--dim);
+    opacity: 0;
+    animation: fadeUp 0.4s ease 0.5s forwards;
+  }
+
+  /* OUTRO SLIDE */
+  .slide-outro h2 {
+    font-size: 72px;
+    font-weight: 800;
+    letter-spacing: -2px;
+    text-align: center;
+    line-height: 1.1;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.2s forwards;
+  }
+
+  .slide-outro h2 span { color: var(--gold); }
+
+  .slide-outro .outro-sub {
+    font-size: 22px;
+    color: var(--dim);
+    margin-top: 28px;
+    text-align: center;
+    opacity: 0;
+    animation: fadeUp 0.5s ease 0.4s forwards;
+  }
+
+  .slide-outro .cta {
+    margin-top: 56px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    opacity: 0;
+    animation: fadeUp 0.5s ease 0.6s forwards;
+  }
+
+  .cta-btn {
+    background: linear-gradient(135deg, var(--gold), var(--orange));
+    color: var(--bg);
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    padding: 20px 48px;
+    border-radius: 100px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .cta-handle {
+    font-family: 'Space Mono', monospace;
+    font-size: 14px;
+    color: var(--dim);
+    letter-spacing: 2px;
+  }
+
+  /* Controls */
+  .controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+    z-index: 100;
+    background: rgba(5,5,8,0.9);
+    padding: 10px 20px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+  }
+
+  .ctrl-btn {
+    background: var(--border);
+    border: none;
+    color: var(--white);
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    padding: 8px 20px;
+    border-radius: 100px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+  }
+
+  .ctrl-btn:hover { background: var(--gold); color: var(--bg); }
+
+  .auto-btn {
+    background: var(--gold);
+    color: var(--bg);
+    font-weight: 700;
+  }
+  .auto-btn.running {
+    background: var(--orange);
+  }
+
+  /* Animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.7); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  /* Transition overlay */
+  .transition-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 50;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+  }
+
+  .transition-overlay.flash {
+    opacity: 1;
   }
 </style>
 </head>
+<body>
+
+<div class="topbar"></div>
+<div class="grid-bg"></div>
+<div class="noise"></div>
+<div class="glow"></div>
+<div class="glow2"></div>
+<div class="transition-overlay" id="overlay"></div>
+
+<!-- ===== SLIDES ===== -->
+
+<!-- SLIDE 0: INTRO -->
+<div class="slide slide-intro active" data-slide="0">
+  <div class="tag">@ethereumsever · Binance Research</div>
+  <h1>TOKEN<span>OMİK</span></h1>
+  <p class="sub">Bir tokenin başarısını ya da çöküşünü belirleyen ekonomik tasarım — 104 tweet, 1 rehber.</p>
+  <div class="pill">
+    <div class="pill-item">ARZ & TALEP</div>
+    <div class="pill-item">TAHSİSLER</div>
+    <div class="pill-item">EMİSYONLAR</div>
+    <div class="pill-item">YÖNETİŞİM</div>
+  </div>
+</div>
+
+<!-- SLIDE 1: TANIM -->
+<div class="slide slide-def" data-slide="1">
+  <div class="def-tag">Tanım · Tweet 4/104</div>
+  <div class="def-word">Tokenomik</div>
+  <p class="def-text">
+    Çeşitli teşviklerin bir jetonun <strong>arzını, talebini ve fiyatını</strong> nasıl etkilediğini anlamak için kriptografik bir jetonun ekonomik özelliklerini belirleme ve değerlendirme çalışması.
+  </p>
+</div>
+
+<!-- SLIDE 2: NEDEN JETON? -->
+<div class="slide slide-section" data-slide="2">
+  <div class="section-num">WHY</div>
+  <div class="content">
+    <div class="label">Tweet 11/104</div>
+    <h2>Gerçekten bir<br><em>jetona ihtiyacın</em><br>var mı?</h2>
+  </div>
+</div>
+
+<!-- SLIDE 3: EKONOMİK NEDENLER -->
+<div class="slide slide-list" data-slide="3">
+  <div class="title">Neden <span>Jeton?</span></div>
+  <div class="list-items">
+    <div class="list-item">
+      <div class="list-num">01</div>
+      <div class="list-text"><strong>Sermaye Artırımı</strong> — Şirketlerin işlerini sürdürmesi için dinamik bir finansman aracı</div>
+    </div>
+    <div class="list-item">
+      <div class="list-num">02</div>
+      <div class="list-text"><strong>Geniş Erişim</strong> — IPO'nun aksine herkes katılabilir. 2017 ICO örneği</div>
+    </div>
+    <div class="list-item">
+      <div class="list-num">03</div>
+      <div class="list-text"><strong>Yönetişim</strong> — DAO yapısında protokolü merkezisizleştirme</div>
+    </div>
+    <div class="list-item">
+      <div class="list-num">04</div>
+      <div class="list-text"><strong>Teşvik Uyumu</strong> — Kullanıcı, kurucu ve yatırımcıyı aynı hizaya getirme</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 4: TARAFLAR -->
+<div class="slide slide-two" data-slide="4">
+  <div class="two-title">Kimin <span>Neye</span> İhtiyacı Var?</div>
+  <div class="two-cols">
+    <div class="col-card">
+      <div class="col-label">Tweet 17–18/104</div>
+      <div class="col-text">
+        <strong>Kullanıcılar</strong><br>İşlem maliyeti kesinliği + hizmet güvenilirliği
+      </div>
+    </div>
+    <div class="col-card">
+      <div class="col-label">Tweet 17–18/104</div>
+      <div class="col-text">
+        <strong>Yatırımcılar</strong><br>Platform büyüdükçe token değerinin artması
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 5: DEĞER TAHAKKUKU -->
+<div class="slide slide-def" data-slide="5">
+  <div class="def-tag">Kavram · Tweet 21/104</div>
+  <div class="def-word">Değer<br>Tahakkuku</div>
+  <p class="def-text">
+    Belirtecin <strong>protokol tarafından oluşturulan değeri</strong> ne kadar iyi yakaladığı. Token için dış talep ve tutma arzusu buna bağlıdır.
+  </p>
+</div>
+
+<!-- SLIDE 6: ARZ & TALEP -->
+<div class="slide slide-section" data-slide="6">
+  <div class="section-num">S&D</div>
+  <div class="content">
+    <div class="label">Tweet 22/104</div>
+    <h2>Arz <em>&</em><br>Talep</h2>
+  </div>
+</div>
+
+<!-- SLIDE 7: ARZ & TALEP DETAY -->
+<div class="slide slide-list" data-slide="7">
+  <div class="title">Tedarik <span>Tarafı</span></div>
+  <div class="list-items">
+    <div class="list-item">
+      <div class="list-num">→</div>
+      <div class="list-text"><strong>Tahsisler</strong> — Kim ne kadar token alıyor?</div>
+    </div>
+    <div class="list-item">
+      <div class="list-num">→</div>
+      <div class="list-text"><strong>Hakediş Süresi</strong> — Ne zaman, hangi koşulda serbest bırakılıyor?</div>
+    </div>
+    <div class="list-item">
+      <div class="list-num">→</div>
+      <div class="list-text"><strong>Emisyonlar</strong> — Token enflasyonist mi, deflasyonist mi?</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 8: TAHSİSLER -->
+<div class="slide slide-section" data-slide="8">
+  <div class="section-num">1.1</div>
+  <div class="content">
+    <div class="label">Tweet 26/104</div>
+    <h2><em>Tahsisler</em><br>Kime, Ne Kadar?</h2>
+  </div>
+</div>
+
+<!-- SLIDE 9: TAHSİSLER DETAY -->
+<div class="slide slide-content" data-slide="9">
+  <div class="tweet-num">TWEET 32/104 · L1 Ekosistem Teşvikleri</div>
+  <div class="main-text">
+    L1 blok zincirleri kamu satış tahsislerini düşürdü.<br>
+    <span class="highlight">Ekosistem teşviklerine</span> daha fazla pay ayırdı.<br><br>
+    <span class="highlight-orange">Neden?</span> Bir L1'in değeri üzerine inşa edilen<br>ekosistemden gelir.
+  </div>
+</div>
+
+<!-- SLIDE 10: MERKEZİLEŞME RİSKİ -->
+<div class="slide slide-stat" data-slide="10">
+  <div class="big-num">%32</div>
+  <div class="stat-label">L1'lerde kurucular + yatırımcıların ortalama arz kontrolü</div>
+  <div class="stat-sub">Tweet 37/104 · Bu merkezileşme riski demek. Azınlık, piyasayı yönlendirebilir.</div>
+</div>
+
+<!-- SLIDE 11: HAKEDİŞ -->
+<div class="slide slide-section" data-slide="11">
+  <div class="section-num">1.2</div>
+  <div class="content">
+    <div class="label">Tweet 40/104</div>
+    <h2><em>Hakediş</em><br>Vesting</h2>
+  </div>
+</div>
+
+<!-- SLIDE 12: HAKEDİŞ NEDEN? -->
+<div class="slide slide-content" data-slide="12">
+  <div class="tweet-num">TWEET 44/104 · Hakediş Olmasa Ne Olur?</div>
+  <div class="main-text">
+    Hakediş olmasaydı, erken yatırımcılar<br>
+    token listelenince <span class="highlight-orange">hemen satardı.</span><br><br>
+    Tutmak için <span class="highlight">hiçbir teşvikleri</span> olmayacaktı.<br>
+    Fiyat çökerdi. Sen zararda kalırdın.
+  </div>
+</div>
+
+<!-- SLIDE 13: HAKEDİŞ TİPLERİ -->
+<div class="slide slide-two" data-slide="13">
+  <div class="two-title">Hakediş <span>Tipleri</span></div>
+  <div class="two-cols">
+    <div class="col-card">
+      <div class="col-label">Tweet 42/104 · Tip 1</div>
+      <div class="col-text">
+        <strong>Zamana Dayalı</strong><br><br>
+        Belirli aralıklarla kademeli kilit açma. Örn: 12 ay cliff, 24 ay linear.
+      </div>
+    </div>
+    <div class="col-card">
+      <div class="col-label">Tweet 42/104 · Tip 2</div>
+      <div class="col-text">
+        <strong>Tetik Tabanlı</strong><br><br>
+        Ana ağ sürümü veya borsa listesi gibi bir olay gerçekleşince açılır.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 14: EMİSYONLAR -->
+<div class="slide slide-section" data-slide="14">
+  <div class="section-num">1.3</div>
+  <div class="content">
+    <div class="label">Tweet 48/104</div>
+    <h2><em>Emisyonlar</em><br>Enflasyon mu,<br>Deflasyon mu?</h2>
+  </div>
+</div>
+
+<!-- SLIDE 15: YAKMA -->
+<div class="slide slide-list" data-slide="15">
+  <div class="title">Token <span>Yakma</span> Mekanizmaları</div>
+  <div class="list-items">
+    <div class="list-item">
+      <div class="list-num">🔥</div>
+      <div class="list-text"><strong>BNB</strong> — Her 3 ayda belirlenen miktarda token yakılır</div>
+    </div>
+    <div class="list-item">
+      <div class="list-num">🔥</div>
+      <div class="list-text"><strong>ETH (PoS sonrası)</strong> — Gaz ücretinin bir yüzdesi otomatik yakılır</div>
+    </div>
+    <div class="list-item">
+      <div class="list-num">→</div>
+      <div class="list-text">Bu mekanizmalar satış baskısını azaltır, tokenı <strong>deflasyonist</strong> yapar</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 16: QUOTE -->
+<div class="slide slide-quote" data-slide="16">
+  <div class="quote-mark">"</div>
+  <div class="quote-text">
+    Bir belirteç yoluyla sübvansiyon, yalnızca belirteç <em>açık piyasada bir değere sahipse</em> gerçekleşebilir — ve bu da yalnızca token protokolün ürettiği değeri yakalamada etkili ise mümkündür.
+  </div>
+  <div class="quote-source">— Binance Research · Tweet 20/104</div>
+</div>
+
+<!-- SLIDE 17: ÖZET -->
+<div class="slide slide-list" data-slide="17">
+  <div class="title">Tokenomik <span>Kontrol Listesi</span></div>
+  <div class="list-items">
+    <div class="list-item">
+      <div class="list-num">✓</div>
+      <div class="list-text">Kurucular + yatırımcılar <strong>%32'den az</strong> arz kontrolüne sahip mi?</div>
+    </div>
+    <div class="list-item">
+      <div class="list-num">✓</div>
+      <div class="list-text">Hakediş planı <strong>kilit taraflara</strong> uygulanıyor mu?</div>
+    </div>
+    <div class="list-item">
+      <div class="list-num">✓</div>
+      <div class="list-text">Emisyon mekanizması <strong>deflasyonist</strong> tasarlanmış mı?</div>
+    </div>
+    <div class="list-item">
+      <div class="list-num">✓</div>
+      <div class="list-text">Token gerçek <strong>değer tahakkuku</strong> sağlıyor mu?</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 18: OUTRO -->
+<div class="slide slide-outro" data-slide="18">
+  <h2>104 Tweet.<br>1 <span>Rehber.</span><br>Tüm Tokenomik.</h2>
+  <p class="outro-sub">Tam thread için @ethereumsever profilini takip et</p>
+  <div class="cta">
+    <div class="cta-btn">Thread'i Oku</div>
+    <div class="cta-handle">@ethereumsever</div>
+  </div>
+</div>
+
+<!-- Progress & Labels -->
+<div class="progress-track">
+  <div class="progress-fill" id="progressFill"></div>
+</div>
+<div class="counter" id="counter">1 / 19</div>
+<div class="brand">@ethereumsever</div>
+
+<!-- Controls -->
+<div class="controls">
+  <button class="ctrl-btn" onclick="prevSlide()">← GERİ</button>
+  <button class="ctrl-btn auto-btn" id="autoBtn" onclick="toggleAuto()">▶ OTO</button>
+  <button class="ctrl-btn" onclick="nextSlide()">İLERİ →</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let current = 0;
+  let autoTimer = null;
+  let isAuto = false;
+  const DURATION = 4500; // ms per slide
+
+  function showSlide(idx) {
+    const overlay = document.getElementById('overlay');
+    overlay.classList.add('flash');
+    setTimeout(() => {
+      slides.forEach(s => s.classList.remove('active'));
+      // Reset animations by cloning
+      const slide = slides[idx];
+      const clone = slide.cloneNode(true);
+      slide.parentNode.replaceChild(clone, slide);
+      slides[idx] = document.querySelectorAll('.slide')[idx];
+      slides[idx].classList.add('active');
+      overlay.classList.remove('flash');
+      updateUI();
+    }, 250);
+  }
+
+  // Faster approach - just toggle active
+  function goTo(idx) {
+    if (idx < 0 || idx >= total) return;
+    const overlay = document.getElementById('overlay');
+    overlay.style.transition = 'opacity 0.2s';
+    overlay.style.opacity = '1';
+    setTimeout(() => {
+      document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+      current = idx;
+      const allSlides = document.querySelectorAll('.slide');
+      allSlides[current].classList.add('active');
+      // Re-trigger animations
+      void allSlides[current].offsetWidth;
+      overlay.style.opacity = '0';
+      updateUI();
+    }, 200);
+  }
+
+  function updateUI() {
+    const allSlides = document.querySelectorAll('.slide');
+    document.getElementById('counter').textContent = `${current + 1} / ${total}`;
+    const pct = ((current) / (total - 1)) * 100;
+    document.getElementById('progressFill').style.width = pct + '%';
+  }
+
+  function nextSlide() {
+    if (current < total - 1) goTo(current + 1);
+    else if (isAuto) stopAuto();
+  }
+
+  function prevSlide() {
+    if (current > 0) goTo(current - 1);
+  }
+
+  function toggleAuto() {
+    if (isAuto) stopAuto();
+    else startAuto();
+  }
+
+  function startAuto() {
+    isAuto = true;
+    document.getElementById('autoBtn').classList.add('running');
+    document.getElementById('autoBtn').textContent = '⏸ DURDUR';
+    autoTimer = setInterval(() => {
+      if (current < total - 1) {
+        goTo(current + 1);
+      } else {
+        stopAuto();
+      }
+    }, DURATION);
+  }
+
+  function stopAuto() {
+    isAuto = false;
+    clearInterval(autoTimer);
+    document.getElementById('autoBtn').classList.remove('running');
+    document.getElementById('autoBtn').textContent = '▶ OTO';
+  }
+
+  // Keyboard nav
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+    if (e.key === 'ArrowLeft') prevSlide();
+    if (e.key === 'Enter') toggleAuto();
+  });
+
+  updateUI();
+</script>
+</body>
 </html>
